@@ -1,26 +1,74 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --gold: #b8912e;
+  --gold-light: #d4b56a;
+  --chocolate: #3d2b1f;
+  --chocolate-light: #5c4033;
+  --cream: #faf6ef;
+  --cream-dark: #f0e8d8;
+  --red: #c0392b;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-gold: var(--gold);
+  --color-gold-light: var(--gold-light);
+  --color-chocolate: var(--chocolate);
+  --color-chocolate-light: var(--chocolate-light);
+  --color-cream: var(--cream);
+  --color-cream-dark: var(--cream-dark);
+  --color-red: var(--red);
   --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+* {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--cream);
+  color: var(--chocolate);
+  font-family: Georgia, 'Times New Roman', serif;
+}
+
+/* Animated counter */
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 15px rgba(184, 145, 46, 0.2); }
+  50% { box-shadow: 0 0 30px rgba(184, 145, 46, 0.4); }
+}
+
+.pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
+}
+
+.shake-hover:hover {
+  animation: shake 0.4s ease-in-out;
+}
+
+/* Progress bar fill animation */
+@keyframes fill-bar {
+  from { width: 0%; }
+}
+
+.animate-fill {
+  animation: fill-bar 1.5s ease-out forwards;
+}
+
+/* Strikethrough animation */
+@keyframes strike {
+  from { text-decoration-color: transparent; }
+  to { text-decoration-color: var(--red); }
+}
+
+.animate-strike {
+  text-decoration: line-through;
+  text-decoration-color: var(--red);
+  text-decoration-thickness: 3px;
+  animation: strike 0.5s ease-out forwards;
 }
