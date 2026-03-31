@@ -28,7 +28,7 @@ function GraciasContent() {
           rel="noopener noreferrer"
           className="inline-block transition-all duration-300 hover:scale-105 mb-4"
         >
-          <Image src="/mp.png" alt="Pagar con MercadoPago" width={280} height={80} />
+          <Image src="/mp.png" alt="Pagar con MercadoPago" width={350} height={100} />
         </a>
 
         <Link
