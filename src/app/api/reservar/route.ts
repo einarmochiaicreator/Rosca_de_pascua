@@ -15,10 +15,19 @@ export async function POST(request: Request) {
     return Response.json({ error: result.error }, { status: 409 });
   }
 
-  const webhookUrl = process.env.SHEETS_WEBHOOK_URL;
-  if (webhookUrl) {
+  const sheetsWebhookUrl = process.env.SHEETS_WEBHOOK_URL;
+  if (sheetsWebhookUrl) {
     const params = new URLSearchParams({ nombre, apellido, cumpleanos, celular, email });
-    fetch(`${webhookUrl}?${params.toString()}`, { method: "GET" }).catch(() => {});
+    fetch(`${sheetsWebhookUrl}?${params.toString()}`, { method: "GET" }).catch(() => {});
+  }
+
+  const n8nWebhookUrl = process.env.N8N_WEBHOOK_URL;
+  if (n8nWebhookUrl) {
+    fetch(n8nWebhookUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ nombre, apellido, cumpleanos, celular, email }),
+    }).catch(() => {});
   }
 
   return Response.json({ id: result.id });
