@@ -9,7 +9,7 @@ export async function POST(request: Request) {
     return Response.json({ error: "Todos los campos son obligatorios" }, { status: 400 });
   }
 
-  const result = createReservation({ nombre, apellido, cumpleanos, celular, email });
+  const result = await createReservation({ nombre, apellido, cumpleanos, celular, email });
 
   if ("error" in result) {
     return Response.json({ error: result.error }, { status: 409 });

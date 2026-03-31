@@ -7,7 +7,7 @@ export async function POST(request: Request) {
     return Response.json({ error: "ID requerido" }, { status: 400 });
   }
 
-  markAsPaid(Number(id), "pending-mp");
+  await markAsPaid(String(id), "pending-mp");
 
   return Response.json({ ok: true });
 }

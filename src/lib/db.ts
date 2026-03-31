@@ -1,73 +1,87 @@
-import Database from "better-sqlite3";
-import path from "path";
-
-const DB_PATH = path.join(process.cwd(), "rosca.db");
+const BASE_ID = "appdSEBglIwFE2h0D";
+const TABLE_ID = "tbl9UwkQStPKYH4J3";
 const TOTAL_STOCK = 30;
+const TABLE_URL = `https://api.airtable.com/v0/${BASE_ID}/${TABLE_ID}`;
 
-function getDb() {
-  const db = new Database(DB_PATH);
-  db.pragma("journal_mode = WAL");
-
-  db.exec(`
-    CREATE TABLE IF NOT EXISTS reservations (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      nombre TEXT NOT NULL,
-      apellido TEXT NOT NULL,
-      cumpleanos TEXT NOT NULL,
-      celular TEXT NOT NULL,
-      email TEXT NOT NULL,
-      created_at TEXT DEFAULT (datetime('now')),
-      paid INTEGER DEFAULT 0,
-      mp_payment_id TEXT
-    )
-  `);
-
-  return db;
-}
-
-export function getStock() {
-  const db = getDb();
-  const row = db.prepare("SELECT COUNT(*) as sold FROM reservations WHERE paid = 1").get() as { sold: number };
-  db.close();
+function headers() {
   return {
-    total: TOTAL_STOCK,
-    sold: row.sold,
-    available: TOTAL_STOCK - row.sold,
+    Authorization: `Bearer ${process.env.AIRTABLE_API_TOKEN}`,
+    "Content-Type": "application/json",
   };
 }
 
-export function createReservation(data: {
+export async function getStock() {
+  const params = new URLSearchParams({
+    filterByFormula: "{Pagado}=1",
+    "fields[]": "Pagado",
+  });
+  const res = await fetch(`${TABLE_URL}?${params}`, { headers: headers() });
+  const data = await res.json();
+  const sold: number = data.records?.length ?? 0;
+  return { total: TOTAL_STOCK, sold, available: TOTAL_STOCK - sold };
+}
+
+export async function createReservation(data: {
   nombre: string;
   apellido: string;
   cumpleanos: string;
   celular: string;
   email: string;
 }) {
-  const db = getDb();
-  const stock = db.prepare("SELECT COUNT(*) as sold FROM reservations WHERE paid = 1").get() as { sold: number };
-
+  const stock = await getStock();
   if (stock.sold >= TOTAL_STOCK) {
-    db.close();
     return { error: "No quedan roscas disponibles" };
   }
 
-  const result = db.prepare(
-    "INSERT INTO reservations (nombre, apellido, cumpleanos, celular, email) VALUES (?, ?, ?, ?, ?)"
-  ).run(data.nombre, data.apellido, data.cumpleanos, data.celular, data.email);
+  const res = await fetch(TABLE_URL, {
+    method: "POST",
+    headers: headers(),
+    body: JSON.stringify({
+      fields: {
+        Nombre: data.nombre,
+        Apellido: data.apellido,
+        "Fecha de nacimiento": data.cumpleanos,
+        Celular: data.celular,
+        Email: data.email,
+        "Fecha reserva": new Date().toISOString(),
+      },
+    }),
+  });
 
-  db.close();
-  return { id: result.lastInsertRowid };
+  if (!res.ok) {
+    return { error: "Error al guardar la reserva" };
+  }
+
+  const record = await res.json();
+  return { id: record.id as string };
 }
 
-export function markAsPaid(id: number, mpPaymentId: string) {
-  const db = getDb();
-  db.prepare("UPDATE reservations SET paid = 1, mp_payment_id = ? WHERE id = ?").run(mpPaymentId, id);
-  db.close();
+export async function markAsPaid(id: string, mpPaymentId: string) {
+  await fetch(`${TABLE_URL}/${id}`, {
+    method: "PATCH",
+    headers: headers(),
+    body: JSON.stringify({
+      fields: {
+        Pagado: true,
+        "MP Payment ID": mpPaymentId,
+      },
+    }),
+  });
 }
 
-export function getReservation(id: number) {
-  const db = getDb();
-  const row = db.prepare("SELECT * FROM reservations WHERE id = ?").get(id);
-  db.close();
-  return row;
+export async function getReservation(id: string) {
+  const res = await fetch(`${TABLE_URL}/${id}`, { headers: headers() });
+  if (!res.ok) return null;
+  const record = await res.json();
+  return {
+    id: record.id,
+    nombre: record.fields.Nombre,
+    apellido: record.fields.Apellido,
+    cumpleanos: record.fields["Fecha de nacimiento"],
+    celular: record.fields.Celular,
+    email: record.fields.Email,
+    paid: record.fields.Pagado ? 1 : 0,
+    mp_payment_id: record.fields["MP Payment ID"],
+    created_at: record.fields["Fecha reserva"],
+  };
 }

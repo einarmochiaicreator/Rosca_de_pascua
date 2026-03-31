@@ -27,15 +27,13 @@ export default function DatosPage() {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
     if (!emailRegex.test(form.email)) return "El email no es válido";
 
-    if (form.cumpleanos) {
-      const birth = new Date(form.cumpleanos);
-      const today = new Date();
-      const minDate = new Date("1900-01-01");
-      if (birth >= today) return "La fecha de nacimiento no puede ser futura";
-      if (birth < minDate) return "La fecha de nacimiento no es válida";
-      const age = today.getFullYear() - birth.getFullYear();
-      if (age > 120) return "La fecha de nacimiento no es válida";
-    }
+    if (!form.cumpleanos.trim()) return "Ingresá tu fecha de nacimiento";
+    const yearMatch = form.cumpleanos.match(/\b(\d{4})\b/);
+    if (!yearMatch) return "Incluí el año en la fecha de nacimiento";
+    const year = parseInt(yearMatch[1]);
+    const currentYear = new Date().getFullYear();
+    if (year > currentYear) return "La fecha de nacimiento no puede ser futura";
+    if (year < 1900 || currentYear - year > 120) return "La fecha de nacimiento no es válida";
 
     return "";
   };
@@ -77,12 +75,10 @@ export default function DatosPage() {
     }
   };
 
-  const today = new Date().toISOString().split("T")[0];
-
   const fields = [
     { key: "nombre", label: "Nombre", type: "text", placeholder: "Tu nombre", max: undefined },
     { key: "apellido", label: "Apellido", type: "text", placeholder: "Tu apellido", max: undefined },
-    { key: "cumpleanos", label: "Fecha de nacimiento", type: "date", placeholder: "", max: today },
+    { key: "cumpleanos", label: "Fecha de nacimiento", type: "text", placeholder: "ej: 9 de septiembre de 1990", max: undefined },
     { key: "celular", label: "Celular (con código de área)", type: "tel", placeholder: "351 1234567", max: undefined },
     { key: "email", label: "Email", type: "email", placeholder: "tu@email.com", max: undefined },
   ];

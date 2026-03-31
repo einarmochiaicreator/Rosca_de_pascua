@@ -15,7 +15,7 @@ function MuchasGraciasContent() {
     fetch("/api/confirmar", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: Number(id) }),
+      body: JSON.stringify({ id }),
     }).catch(() => {});
   }, [id]);
 

@@ -3,6 +3,6 @@ import { getStock } from "@/lib/db";
 export const dynamic = "force-dynamic";
 
 export async function GET() {
-  const stock = getStock();
+  const stock = await getStock();
   return Response.json(stock);
 }
