@@ -2,6 +2,7 @@
 
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { Suspense } from "react";
 
 const MP_LINK = "https://mpago.la/298b85F";
@@ -25,9 +26,9 @@ function GraciasContent() {
           href={MP_LINK}
           target="_blank"
           rel="noopener noreferrer"
-          className="inline-block bg-gold hover:bg-gold-light text-white font-black text-xl md:text-2xl px-12 py-5 rounded-full transition-all duration-300 hover:scale-105 shadow-lg shadow-gold/20 mb-4"
+          className="inline-block transition-all duration-300 hover:scale-105 mb-4"
         >
-          Pagar con MercadoPago
+          <Image src="/mp.png" alt="Pagar con MercadoPago" width={280} height={80} />
         </a>
 
         <Link
