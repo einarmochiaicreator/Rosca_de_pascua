@@ -30,5 +30,14 @@ export async function POST(request: Request) {
     }).catch(() => {});
   }
 
+  const n8nSmsWebhookUrl = process.env.N8N_SMS_WEBHOOK_URL;
+  if (n8nSmsWebhookUrl) {
+    fetch(n8nSmsWebhookUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ nombre, apellido, cumpleanos, celular, email }),
+    }).catch(() => {});
+  }
+
   return Response.json({ id: result.id });
 }
