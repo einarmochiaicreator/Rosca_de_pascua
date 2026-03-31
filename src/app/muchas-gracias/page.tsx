@@ -46,8 +46,7 @@ function MuchasGraciasContent() {
           <div className="flex items-start gap-3">
             <span className="text-gold text-xl">📧</span>
             <p className="text-chocolate-light">
-              Te vamos a escribir por <strong className="text-chocolate">email</strong> y{" "}
-              <strong className="text-chocolate">WhatsApp</strong> para recordarte.
+              Te vamos a escribir por <strong className="text-chocolate">email</strong> para recordarte.
             </p>
           </div>
           <div className="flex items-start gap-3">
@@ -59,7 +58,7 @@ function MuchasGraciasContent() {
         </div>
 
         <p className="text-chocolate-light/60 text-sm">
-          ¿Tenés alguna duda? Escribinos por Instagram o WhatsApp.
+          ¿Tenés alguna duda? Escribinos por Instagram.
         </p>
 
         <Link

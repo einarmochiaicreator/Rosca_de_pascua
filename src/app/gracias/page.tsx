@@ -41,8 +41,7 @@ function GraciasContent() {
           <div className="flex items-start gap-3">
             <span className="text-gold text-xl">📧</span>
             <p className="text-chocolate-light">
-              Te estará llegando un <strong className="text-chocolate">email</strong> y un{" "}
-              <strong className="text-chocolate">WhatsApp</strong> para recordarte el retiro.
+              Te estará llegando un <strong className="text-chocolate">email</strong> para recordarte el retiro.
             </p>
           </div>
           <div className="flex items-start gap-3">
@@ -60,7 +59,7 @@ function GraciasContent() {
         </div>
 
         <p className="text-chocolate-light/60 text-sm">
-          ¿Tenés alguna duda? Escribinos por Instagram o WhatsApp.
+          ¿Tenés alguna duda? Escribinos por Instagram.
         </p>
 
         <Link
