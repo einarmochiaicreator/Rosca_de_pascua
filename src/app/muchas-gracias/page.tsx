@@ -46,7 +46,7 @@ function MuchasGraciasContent() {
           <div className="flex items-start gap-3">
             <span className="text-gold text-xl">📧</span>
             <p className="text-chocolate-light">
-              Te vamos a escribir por <strong className="text-chocolate">email</strong> para recordarte.
+              Te vamos a mandar un <strong className="text-chocolate">email</strong> para recordarte.
             </p>
           </div>
           <div className="flex items-start gap-3">

@@ -207,7 +207,7 @@ function TestimonialCarousel({ items }: { items: string[] }) {
           >
             <div className={`rounded-2xl overflow-hidden shadow-xl transition-shadow duration-500 ${
               isActive ? "shadow-gold/30 ring-2 ring-gold/40" : ""
-            }`} style={{ width: isActive ? 340 : 260 }}>
+            }`} style={{ width: isActive ? "min(340px, 85vw)" : "min(260px, 65vw)" }}>
               <Image
                 src={src}
                 alt={`Testimonio ${i + 1}`}
@@ -326,7 +326,7 @@ export default function Home() {
         </h2>
         <div className="space-y-5 text-lg text-chocolate-light leading-relaxed text-left">
           <p>
-            Una masa brioche que cede apenas la tocás: suave, aireada, con ese perfume a vainilla, azahar y cascara de limón que llega antes de que la veas.
+            Masa brioche que cede apenas la tocás: suave, aireada, con ese perfume a vainilla, azahar y cascara de limón que llega antes de que la veas.
           </p>
           <p>
             Adentro, <strong className="text-chocolate">crema pastelera</strong>. Sedosa, cremosa en el punto justo,
