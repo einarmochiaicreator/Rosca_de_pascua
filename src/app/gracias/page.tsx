@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Suspense } from "react";
 
-const MP_LINK = "https://mpago.la/298b85F";
+const MP_LINK = "https://mpago.la/2MtUq3e";
 
 function GraciasContent() {
   const searchParams = useSearchParams();
