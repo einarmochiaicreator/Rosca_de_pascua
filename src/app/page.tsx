@@ -408,16 +408,33 @@ export default function Home() {
           </p>
 
           <div className="pt-6">
-            <Link
-              href="/reservar"
-              className="inline-block text-white font-black text-xl md:text-2xl px-12 py-5 rounded-full transition-all duration-300 hover:scale-105 shake-hover shadow-lg"
-              style={{ background: "#2e7d32" }}
-            >
-              Quiero reservarla
-            </Link>
-            <p className="mt-4 text-chocolate-light/60 text-sm">
-              Quedan {stock.available} de {stock.total} disponibles
-            </p>
+            {stock.available > 0 ? (
+              <>
+                <Link
+                  href="/reservar"
+                  className="inline-block text-white font-black text-xl md:text-2xl px-12 py-5 rounded-full transition-all duration-300 hover:scale-105 shake-hover shadow-lg"
+                  style={{ background: "#2e7d32" }}
+                >
+                  Quiero reservarla
+                </Link>
+                <p className="mt-4 text-chocolate-light/60 text-sm">
+                  Quedan {stock.available} de {stock.total} disponibles
+                </p>
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/reservar?lista=true"
+                  className="inline-block text-white font-black text-xl md:text-2xl px-12 py-5 rounded-full transition-all duration-300 hover:scale-105 shadow-lg"
+                  style={{ background: "#b45309" }}
+                >
+                  Avisame de futuras ediciones limitadas
+                </Link>
+                <p className="mt-4 text-chocolate-light/60 text-sm">
+                  Las roscas se agotaron, pero podés dejar tus datos y te avisamos.
+                </p>
+              </>
+            )}
           </div>
         </div>
       </Section>

@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
-const conditions = [
+const conditionsReserva = [
   {
     id: "pagar",
     text: "Voy a pagar hoy para reservar mi rosca",
@@ -15,10 +15,20 @@ const conditions = [
   },
 ];
 
-export default function ReservarPage() {
+const conditionsLista = [
+  {
+    id: "avisar",
+    text: "Quiero que me avisen cuando Gustazo Gluten Free lance un nuevo producto en edición limitada.",
+  },
+];
+
+function ReservarContent() {
   const [checked, setChecked] = useState<Record<string, boolean>>({});
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const isLista = searchParams.get("lista") === "true";
 
+  const conditions = isLista ? conditionsLista : conditionsReserva;
   const allChecked = conditions.every((c) => checked[c.id]);
 
   const toggle = (id: string) => {
@@ -33,10 +43,12 @@ export default function ReservarPage() {
         </Link>
 
         <h1 className="text-3xl md:text-4xl font-bold text-chocolate mb-2">
-          Antes de reservar
+          {isLista ? "Anotate para la próxima edición" : "Antes de reservar"}
         </h1>
         <p className="text-chocolate-light mb-10">
-          Necesitamos que confirmes lo siguiente para continuar:
+          {isLista
+            ? "Las roscas de esta edición ya se agotaron. Dejá tus datos y te avisamos cuando lancemos el próximo producto en edición limitada."
+            : "Necesitamos que confirmes lo siguiente para continuar:"}
         </p>
 
         <div className="space-y-4 mb-10">
@@ -72,8 +84,8 @@ export default function ReservarPage() {
 
         <button
           disabled={!allChecked}
-          onClick={() => router.push("/datos")}
-          style={allChecked ? { background: "#2e7d32" } : {}}
+          onClick={() => router.push(`/datos${isLista ? "?lista=true" : ""}`)}
+          style={allChecked ? { background: isLista ? "#b45309" : "#2e7d32" } : {}}
           className={`w-full py-4 rounded-full text-xl font-bold transition-all duration-300 ${
             allChecked
               ? "text-white hover:scale-[1.02] shadow-lg cursor-pointer"
@@ -84,5 +96,17 @@ export default function ReservarPage() {
         </button>
       </div>
     </main>
+  );
+}
+
+export default function ReservarPage() {
+  return (
+    <Suspense fallback={
+      <main className="min-h-screen flex items-center justify-center bg-cream">
+        <p className="text-gold text-xl">Cargando...</p>
+      </main>
+    }>
+      <ReservarContent />
+    </Suspense>
   );
 }

@@ -1,7 +1,9 @@
 const BASE_ID = "appdSEBglIwFE2h0D";
 const TABLE_ID = "tbl9UwkQStPKYH4J3";
+const LISTA_ESPERA_TABLE_ID = "tblRmFxBXbB8j9APP";
 const TOTAL_STOCK = 30;
 const TABLE_URL = `https://api.airtable.com/v0/${BASE_ID}/${TABLE_ID}`;
+const LISTA_ESPERA_URL = `https://api.airtable.com/v0/${BASE_ID}/${LISTA_ESPERA_TABLE_ID}`;
 
 function headers() {
   return {
@@ -27,7 +29,28 @@ export async function createReservation(data: {
   cumpleanos: string;
   celular: string;
   email: string;
+  listaEspera?: boolean;
 }) {
+  if (data.listaEspera) {
+    const res = await fetch(LISTA_ESPERA_URL, {
+      method: "POST",
+      headers: headers(),
+      body: JSON.stringify({
+        fields: {
+          Nombre: data.nombre,
+          Apellido: data.apellido,
+          "Fecha de nacimiento": data.cumpleanos,
+          Celular: data.celular,
+          Email: data.email,
+          "Fecha registro": new Date().toISOString(),
+        },
+      }),
+    });
+    if (!res.ok) return { error: "Error al guardar" };
+    const record = await res.json();
+    return { id: record.id as string };
+  }
+
   const stock = await getStock();
   if (stock.sold >= TOTAL_STOCK) {
     return { error: "No quedan roscas disponibles" };

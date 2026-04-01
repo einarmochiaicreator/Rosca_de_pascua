@@ -1,9 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 
-export default function DatosPage() {
+function DatosContent() {
+  const searchParams = useSearchParams();
+  const isLista = searchParams.get("lista") === "true";
+
   const [form, setForm] = useState({
     nombre: "",
     apellido: "",
@@ -66,18 +70,22 @@ export default function DatosPage() {
       const res = await fetch("/api/reservar", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, lista: isLista }),
       });
 
       const data = await res.json();
 
       if (!res.ok) {
-        setError(data.error || "Error al procesar la reserva");
+        setError(data.error || "Error al procesar la solicitud");
         setLoading(false);
         return;
       }
 
-      window.location.href = `/gracias?id=${data.id}`;
+      if (isLista) {
+        window.location.href = "/lista-gracias";
+      } else {
+        window.location.href = `/gracias?id=${data.id}`;
+      }
     } catch {
       setError("Error de conexión. Intentá de nuevo.");
       setLoading(false);
@@ -95,7 +103,10 @@ export default function DatosPage() {
   return (
     <main className="min-h-screen flex flex-col items-center justify-center px-4 py-16 bg-cream">
       <div className="max-w-lg w-full">
-        <Link href="/reservar" className="text-gold hover:text-gold-light text-sm mb-8 inline-block">
+        <Link
+          href={isLista ? "/reservar?lista=true" : "/reservar"}
+          className="text-gold hover:text-gold-light text-sm mb-8 inline-block"
+        >
           ← Volver
         </Link>
 
@@ -103,7 +114,9 @@ export default function DatosPage() {
           Tus datos
         </h1>
         <p className="text-chocolate-light mb-10">
-          Completá tus datos para reservar tu rosca de pascua.
+          {isLista
+            ? "Completá tus datos y te avisamos cuando lancemos el próximo producto en edición limitada."
+            : "Completá tus datos para reservar tu rosca de pascua."}
         </p>
 
         <div className="space-y-5">
@@ -134,7 +147,7 @@ export default function DatosPage() {
         <button
           disabled={!allFilled || loading}
           onClick={handleSubmit}
-          style={allFilled && !loading ? { background: "#2e7d32" } : {}}
+          style={allFilled && !loading ? { background: isLista ? "#b45309" : "#2e7d32" } : {}}
           className={`w-full mt-8 py-4 rounded-full text-xl font-bold transition-all duration-300 ${
             allFilled && !loading
               ? "text-white hover:scale-[1.02] shadow-lg cursor-pointer"
@@ -149,11 +162,25 @@ export default function DatosPage() {
               </svg>
               Procesando...
             </span>
+          ) : isLista ? (
+            "Anotarme →"
           ) : (
             "Siguiente →"
           )}
         </button>
       </div>
     </main>
+  );
+}
+
+export default function DatosPage() {
+  return (
+    <Suspense fallback={
+      <main className="min-h-screen flex items-center justify-center bg-cream">
+        <p className="text-gold text-xl">Cargando...</p>
+      </main>
+    }>
+      <DatosContent />
+    </Suspense>
   );
 }
