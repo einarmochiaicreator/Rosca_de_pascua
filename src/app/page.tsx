@@ -236,6 +236,39 @@ function TestimonialCarousel({ items }: { items: string[] }) {
   );
 }
 
+function CTAButton({ available }: { available: number }) {
+  if (available > 0) {
+    return (
+      <div className="pt-4 text-center">
+        <Link
+          href="/reservar"
+          className="inline-block text-white font-black text-xl md:text-2xl px-12 py-5 rounded-full transition-all duration-300 hover:scale-105 shake-hover shadow-lg"
+          style={{ background: "#2e7d32" }}
+        >
+          Quiero reservarla
+        </Link>
+        <p className="mt-4 text-chocolate-light/60 text-sm">
+          Quedan {available} disponibles
+        </p>
+      </div>
+    );
+  }
+  return (
+    <div className="pt-4 text-center">
+      <Link
+        href="/reservar?lista=true"
+        className="inline-block text-white font-black text-xl md:text-2xl px-12 py-5 rounded-full transition-all duration-300 hover:scale-105 shadow-lg"
+        style={{ background: "#b45309" }}
+      >
+        Avisame de futuras ediciones limitadas
+      </Link>
+      <p className="mt-4 text-chocolate-light/60 text-sm">
+        Las roscas se agotaron, pero podés dejar tus datos y te avisamos.
+      </p>
+    </div>
+  );
+}
+
 const PRICE_REAL = 12600;
 const PRICE_FAKE = Math.round(PRICE_REAL * 1.5);
 
@@ -279,12 +312,14 @@ export default function Home() {
           </p>
 
           {/* Stock counter */}
-          <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-5 w-full mb-8 shadow-sm">
+          <div className="bg-white/60 backdrop-blur-sm rounded-2xl p-5 w-full mb-6 shadow-sm">
             <p className="text-2xl font-bold text-chocolate mb-2">
               Quedan <span className="text-gold"><AnimatedCounter target={stock.available} /></span> de {stock.total}
             </p>
             <StockBar sold={stock.sold} total={stock.total} />
           </div>
+
+          <CTAButton available={stock.available} />
 
           {/* Arrow */}
           <div className="animate-bounce">
@@ -363,6 +398,7 @@ export default function Home() {
               ¡Ahorrás ${(PRICE_FAKE - PRICE_REAL).toLocaleString("es-AR")}!
             </span>
           </div>
+          <CTAButton available={stock.available} />
         </div>
       </Section>
 
@@ -407,35 +443,7 @@ export default function Home() {
             <span className="text-gold font-bold">esta es tu oportunidad de hacerlo.</span>
           </p>
 
-          <div className="pt-6">
-            {stock.available > 0 ? (
-              <>
-                <Link
-                  href="/reservar"
-                  className="inline-block text-white font-black text-xl md:text-2xl px-12 py-5 rounded-full transition-all duration-300 hover:scale-105 shake-hover shadow-lg"
-                  style={{ background: "#2e7d32" }}
-                >
-                  Quiero reservarla
-                </Link>
-                <p className="mt-4 text-chocolate-light/60 text-sm">
-                  Quedan {stock.available} de {stock.total} disponibles
-                </p>
-              </>
-            ) : (
-              <>
-                <Link
-                  href="/reservar?lista=true"
-                  className="inline-block text-white font-black text-xl md:text-2xl px-12 py-5 rounded-full transition-all duration-300 hover:scale-105 shadow-lg"
-                  style={{ background: "#b45309" }}
-                >
-                  Avisame de futuras ediciones limitadas
-                </Link>
-                <p className="mt-4 text-chocolate-light/60 text-sm">
-                  Las roscas se agotaron, pero podés dejar tus datos y te avisamos.
-                </p>
-              </>
-            )}
-          </div>
+          <CTAButton available={stock.available} />
         </div>
       </Section>
 
